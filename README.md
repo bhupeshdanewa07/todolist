@@ -17,3 +17,6 @@ A simple Todo List application built using:
 1. Clone the repository
 2. Open the index.html file in a web browser
 3. Start adding tasks
+
+## Live Link
+Access the live deployed website [here](https://bhupeshdanewa07.github.io/todolist/)
