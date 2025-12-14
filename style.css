@@ -28,7 +28,7 @@ body {
   align-items: center;
   overflow-x: hidden;
   position: relative;
-  user-select: none; /* Prevent text selection during drag */
+  user-select: none;
 }
 
 /* Dynamic Background */
@@ -91,7 +91,6 @@ body {
   }
 }
 
-/* Main Container - Glassmorphism */
 .container {
   width: 90%;
   max-width: 500px;
@@ -191,7 +190,6 @@ header h1 {
   transform: translateY(0) scale(0.95);
 }
 
-/* Todo List */
 .todo-list {
   list-style: none;
   max-height: 400px;
@@ -199,7 +197,6 @@ header h1 {
   padding-right: 5px;
 }
 
-/* Scrollbar Styling */
 .todo-list::-webkit-scrollbar {
   width: 6px;
 }
@@ -262,10 +259,9 @@ header h1 {
   align-items: center;
   gap: 15px;
   flex: 1;
-  pointer-events: none; /* Let drag events pass through content */
+  pointer-events: none;
 }
 
-/* Re-enable events for buttons inside */
 .check-btn,
 .delete-btn {
   pointer-events: auto;
@@ -299,7 +295,7 @@ header h1 {
   transition: all 0.3s ease;
   cursor: pointer;
   word-break: break-word;
-  pointer-events: auto; /* Allow clicking text to toggle */
+  pointer-events: auto;
 }
 
 .todo-item.completed .todo-text {

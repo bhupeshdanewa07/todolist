@@ -1,26 +1,21 @@
 document.addEventListener("DOMContentLoaded", () => {
-  // Select DOM elements
   const todoInput = document.getElementById("todo-input");
   const addBtn = document.getElementById("add-btn");
   const todoList = document.getElementById("todo-list");
   const emptyState = document.getElementById("empty-state");
   const dateDisplay = document.getElementById("date-display");
 
-  // Set Date
   const options = { weekday: "long", month: "long", day: "numeric" };
   dateDisplay.textContent = new Date().toLocaleDateString("en-US", options);
 
-  // Initial Load
   loadTodos();
   updateEmptyState();
 
-  // Event Listeners
   addBtn.addEventListener("click", addTodo);
   todoInput.addEventListener("keypress", (e) => {
     if (e.key === "Enter") addTodo();
   });
 
-  // Drag Over Event for List (Global for the list)
   todoList.addEventListener("dragover", (e) => {
     e.preventDefault();
     const afterElement = getDragAfterElement(todoList, e.clientY);
@@ -33,8 +28,6 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
   });
-
-  // Functions
 
   function addTodo() {
     const text = todoInput.value.trim();
@@ -57,7 +50,6 @@ document.addEventListener("DOMContentLoaded", () => {
     todoInput.value = "";
     updateEmptyState();
 
-    // Add subtle haptic feedback
     if (navigator.vibrate) navigator.vibrate(10);
   }
 
@@ -71,7 +63,6 @@ document.addEventListener("DOMContentLoaded", () => {
       { once: true }
     );
 
-    // Remove error border on input
     todoInput.addEventListener(
       "input",
       () => {
@@ -89,7 +80,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     toastContainer.appendChild(toast);
 
-    // Remove after animation (3s total: 0.3s enter + 2.4s wait + 0.3s exit)
     setTimeout(() => {
       toast.remove();
     }, 3000);
@@ -114,7 +104,6 @@ document.addEventListener("DOMContentLoaded", () => {
             </button>
         `;
 
-    // Event listeners for internal buttons
     const checkBtn = li.querySelector(".check-btn");
     const todoText = li.querySelector(".todo-text");
     const deleteBtn = li.querySelector(".delete-btn");
@@ -125,7 +114,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     deleteBtn.addEventListener("click", () => deleteTodo(li, todo.id));
 
-    // Drag Events
     li.addEventListener("dragstart", () => {
       li.classList.add("dragging");
     });
@@ -135,10 +123,6 @@ document.addEventListener("DOMContentLoaded", () => {
       saveOrderToLocal();
     });
 
-    // Add to top of list (default behavior)
-    // If loading from storage, we might simply append if the order is already preserved.
-    // But here we insertBefore firstChild to make new tasks appear at top.
-    // This is fine as long as we save the order correctly.
     todoList.insertBefore(li, todoList.firstChild);
   }
 
@@ -164,7 +148,6 @@ document.addEventListener("DOMContentLoaded", () => {
   function toggleComplete(element, id) {
     element.classList.toggle("completed");
 
-    // Update Local Storage based on current DOM order is safest to keep everything in sync
     saveOrderToLocal();
   }
 
@@ -189,7 +172,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 100);
   }
 
-  // Local Storage Helpers
   function getTodosFromLocal() {
     return localStorage.getItem("todos")
       ? JSON.parse(localStorage.getItem("todos"))
@@ -198,7 +180,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function saveTodoToLocal(todo) {
     const todos = getTodosFromLocal();
-    // Add to beginning of array so it matches visual 'top'
     todos.unshift(todo);
     localStorage.setItem("todos", JSON.stringify(todos));
   }
@@ -222,18 +203,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function loadTodos() {
     const todos = getTodosFromLocal();
-    // Since we save top-to-bottom and createTodoElement uses insertBefore(firstChild),
-    // we need to iterate in REVERSE order to restore the visual list correctly.
-    // Saved: [Item 1, Item 2, Item 3] (Item 1 is Top)
-    // Reversed: Item 3, Item 2, Item 1
-    // Create Item 3 -> Top
-    // Create Item 2 -> Top (Item 3 pushed down)
-    // Create Item 1 -> Top (Item 2 pushed down)
-    // Result: Item 1, Item 2, Item 3. Correct.
-
-    // Wait, if we use unshift for saveTodoToLocal, the array in storage is [Newest, ..., Oldest].
-    // If we save order manually, it is [Top, ..., Bottom].
-    // So yes, iterating in reverse and inserting at top creates the original order.
 
     todos.reverse().forEach((todo) => createTodoElement(todo));
   }
